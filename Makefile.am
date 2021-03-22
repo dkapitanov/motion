@@ -2,6 +2,18 @@ ACLOCAL_AMFLAGS = -I m4
 
 SUBDIRS = src po man
 
+if DEVELOPER_FLAGS
+motionincludedir = $(includedir)/motion
+motioninclude_HEADERS = \
+	config.h \
+	src/motion.h \
+	src/plugin.h \
+	src/event_shared.h \
+	src/conf.h \
+	src/track.h \
+	src/mmalcam.h
+endif
+
 sysconfdir = @sysconfdir@/$(PACKAGE)
 sysconf_DATA = \
 	data/motion-dist.conf \

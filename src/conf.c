@@ -45,6 +45,10 @@
 #include "util.h"
 #include "logger.h"
 
+#if defined HAVE_PLUGINS
+#include "plugin.h"
+#endif
+
 #define EXTENSION ".conf"
 
 #define stripnewline(x) {if ((x)[strlen(x)-1]=='\n') (x)[strlen(x) - 1] = 0; }
@@ -207,7 +211,9 @@ struct config conf_template = {
     .sql_log_timelapse =               FALSE,
     .sql_query_start =                 NULL,
     .sql_query_stop =                  NULL,
-    .sql_query =                       NULL
+    .sql_query =                       NULL,
+
+    .plugins_dir=                      NULL
 
 };
 
@@ -1649,6 +1655,19 @@ config_param config_params[] = {
     print_string,
     WEBUI_LEVEL_ADVANCED
     },
+ #if defined HAVE_PLUGINS   
+    {
+    "plugins_dir",
+    "##############################################################\n"
+    "# Plugins library path.\n"
+    "##############################################################",
+    0,
+    CONF_OFFSET(plugins_dir),
+    load_plugins,
+    print_string,
+    WEBUI_LEVEL_NEVER
+    },
+#endif
     { NULL, NULL, 0, 0, NULL, NULL, 0 }
 };
 
@@ -3215,6 +3234,49 @@ static const char *print_camera(struct context **cnt, char **str, int parm, unsi
 }
 
 /**
+ * load_plugins
+ *     Load all libraries from directory
+ *     When found calls config_camera
+ */
+
+#if defined HAVE_PLUGINS
+struct context **load_plugins(struct context **cnt, const char *str, int val)
+{
+    DIR *dp;
+    struct dirent *ep;
+    size_t name_len;
+    
+    char plugin_file[PATH_MAX];
+    MOTION_LOG(NTC, TYPE_ALL, NO_ERRNO
+            ,_("PLUGINS DIR %s"), str);
+    dp = opendir(str);
+    if (dp != NULL) {
+        while( (ep = readdir(dp)) ) {
+            name_len = strlen(ep->d_name);
+            if (name_len > strlen(PLUGIN_EXTENSION) &&
+                (strncmp(PLUGIN_EXTENSION,(ep->d_name + name_len - strlen(PLUGIN_EXTENSION)),
+                        strlen(PLUGIN_EXTENSION)) == 0 )) {
+                memset(plugin_file, '\0', sizeof(plugin_file));
+                snprintf(plugin_file, sizeof(plugin_file) - 1, "%s/%s",
+                            str, ep->d_name);
+                load_plugin(plugin_file);
+	        }
+        }
+        closedir(dp);
+    } else {
+        MOTION_LOG(ALR, TYPE_ALL, SHOW_ERRNO
+            ,_("Plugins directory %s not found"), str);
+        return cnt;
+    }
+
+    /* Store the given config value to allow writing it out */
+    cnt = copy_string(cnt, str, val);
+
+    return cnt;
+}
+#endif
+
+/**
  * read_camera_dir
  *     Read the directory finding all *.conf files in the path
  *     When found calls config_camera
@@ -3462,6 +3524,7 @@ static void config_parms_intl()
         MOTION_LOG(DBG, TYPE_ALL, NO_ERRNO,"%s:%s","movie_filename",_("movie_filename"));
         MOTION_LOG(DBG, TYPE_ALL, NO_ERRNO,"%s:%s","movie_extpipe_use",_("movie_extpipe_use"));
         MOTION_LOG(DBG, TYPE_ALL, NO_ERRNO,"%s:%s","movie_extpipe",_("movie_extpipe"));
+        MOTION_LOG(DBG, TYPE_ALL, NO_ERRNO,"%s:%s","plugins_dir",_("plugins_dir"));
         MOTION_LOG(DBG, TYPE_ALL, NO_ERRNO,"%s:%s","timelapse_interval",_("timelapse_interval"));
         MOTION_LOG(DBG, TYPE_ALL, NO_ERRNO,"%s:%s","timelapse_mode",_("timelapse_mode"));
         MOTION_LOG(DBG, TYPE_ALL, NO_ERRNO,"%s:%s","timelapse_fps",_("timelapse_fps"));

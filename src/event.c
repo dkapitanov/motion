@@ -35,6 +35,12 @@
 #include "video_common.h"
 #include "dbse.h"
 
+#if defined HAVE_PLUGINS
+#include "plugin.h"
+#endif
+
+#include <stdbool.h>
+
 /*
  * TODO Items:
  * Rework the snprintf uses.
@@ -1232,7 +1238,25 @@ static void event_ffmpeg_timelapseend(struct context *cnt, motion_event eventtyp
     }
 }
 
-
+#if defined HAVE_PLUGINS
+static void plugin_process(struct context *cnt, motion_event type, struct image_data *img_data,
+           char *filename, void *eventdata, struct timeval *tv1)
+{
+    MOTION_LOG(NTC, TYPE_ALL, NO_ERRNO
+                        ,"Plugin process event with type %d", type );
+    struct plugin_registry *registry = get_registry(EVENT_EXTENSION);
+    if (!registry) {
+        MOTION_LOG(ERR, TYPE_ALL, NO_ERRNO
+                ,"Unknown registry for the type %d", EVENT_EXTENSION);
+        return;
+    }
+    struct plugin_event_data current_event = {cnt, type, img_data, filename, eventdata, tv1};
+    for (int i = 0; i < registry->size; ++i) {
+        if (registry->plugin_handlers[i](&current_event))
+            break;
+    }
+}
+#endif
 
 /*
  * Starting point for all events
@@ -1396,4 +1420,8 @@ void event(struct context *cnt, motion_event eventtype, struct image_data *img_d
             event_handlers[i].handler(cnt, eventtype, img_data, filename, eventdata, tv1);
         }
     }
+
+#if defined HAVE_PLUGINS
+    plugin_process(cnt, eventtype, img_data, filename, eventdata, tv1);
+#endif
 }

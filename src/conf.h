@@ -192,6 +192,9 @@ struct config {
     const char      *sql_query_stop;
     const char      *sql_query;
 
+    /* Plugins extention configuration parameters */
+    const char      *plugins_dir;
+
     /* Command line parameters */
     int             argc;
     char            **argv;
@@ -240,5 +243,8 @@ struct context **copy_string(struct context **cnt, const char *str, int val_ptr)
 struct context **copy_uri(struct context **cnt, const char *str, int val);
 const char *config_type(config_param *configparam);
 struct context **read_camera_dir(struct context **cnt, const char *str, int val);
+#if defined HAVE_PLUGINS 
+struct context **load_plugins(struct context **cnt, const char *str, int val);
+#endif
 
 #endif /* _INCLUDE_CONF_H */

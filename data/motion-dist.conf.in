@@ -46,6 +46,13 @@ videodevice /dev/video0
 ; mmalcam_control_params value
 
 ############################################################
+# Plugins configuration parameters
+############################################################
+
+# Plugins search path.
+#plugins_dir ./plugins
+
+############################################################
 # Image Processing configuration parameters
 ############################################################
 

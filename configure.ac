@@ -414,6 +414,18 @@ AS_IF([test "${SQLITE3}" = "no"], [
 )
 
 ##############################################################################
+###  Check for PLUGINS - Optional
+##############################################################################
+AC_ARG_WITH(plugins,
+  AS_HELP_STRING([--without-plugins],[Disable plugins support.]),
+  [USE_PLUGINS="$withval"],
+  [USE_PLUGINS="yes"]
+)
+AS_IF([test "${USE_PLUGINS}" = "yes"],[ 
+  AC_DEFINE([HAVE_PLUGINS], [1], [Define to 1 if you have PLUGINS support])]
+)
+
+##############################################################################
 ###  Optimize compiler
 ##############################################################################
 AC_ARG_WITH([optimizecpu],
@@ -449,6 +461,8 @@ AS_IF([test "${DEVELOPER_FLAGS}" = "yes"], [
     TEMP_CFLAGS="$TEMP_CFLAGS -W -Werror -Wall -Wextra -Wformat -Wshadow -Wpointer-arith -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -Wnested-externs -Winline -Wredundant-decls -Wno-long-long -ggdb -g3"
   ]
 )
+AM_CONDITIONAL([DEVELOPER_FLAGS],[test "${DEVELOPER_FLAGS}" = "yes"])
+
 ##############################################################################
 ###  Prototype Flags
 ###  mysql and mariadb have upstream prototype errors so remove that check
@@ -517,6 +531,7 @@ echo "SQLite3 support     : $SQLITE3"
 echo "MYSQL support       : $MYSQL"
 echo "PostgreSQL support  : $PGSQL"
 echo "MariaDB support     : $MARIADB"
+echo "Plugins support     : $USE_PLUGINS"
 echo
 echo  "Install prefix:       $prefix"
 echo
