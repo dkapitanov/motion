@@ -1206,6 +1206,10 @@ static mymhd_retcd webu_mhd_send(struct webui_ctx *webui, int ctrl)
                 MHD_add_response_header (response, MHD_HTTP_HEADER_ACCESS_CONTROL_ALLOW_ORIGIN
                     , webui->cnt->conf.stream_cors_header);
             }
+            if (webui->cnt->conf.stream_cache_control != NULL) {
+                MHD_add_response_header (response, MHD_HTTP_HEADER_CACHE_CONTROL
+                    , webui->cnt->conf.stream_cache_control);
+            }
             if ((webui->cnct_type == WEBUI_CNCT_STATUS_LIST) ||
                 (webui->cnct_type == WEBUI_CNCT_STATUS_ONE)) {
                 MHD_add_response_header (response, MHD_HTTP_HEADER_CONTENT_TYPE, "application/json");

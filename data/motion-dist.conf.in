@@ -157,6 +157,12 @@ stream_port 8081
 # Restrict stream connections to the localhost.
 stream_localhost on
 
+# CORS header for the live stream.
+#stream_cors_header *
+
+# Cache control for the live stream.
+#stream_cache_control no-store
+
 ##############################################################
 # Camera config files - One for each camera.
 ##############################################################

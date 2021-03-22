@@ -87,7 +87,7 @@ static void webu_stream_mjpeg_delay(struct webui_ctx *webui)
 static void webu_stream_mjpeg_getimg(struct webui_ctx *webui)
 {
     long jpeg_size;
-    char resp_head[80];
+    char resp_head[120];
     int  header_len;
     struct stream_data *local_stream;
 
@@ -122,7 +122,7 @@ static void webu_stream_mjpeg_getimg(struct webui_ctx *webui)
             return;
         }
         jpeg_size = local_stream->jpeg_size;
-        header_len = snprintf(resp_head, 80
+        header_len = snprintf(resp_head, sizeof(resp_head)
             ,"--BoundaryString\r\n"
             "Content-type: image/jpeg\r\n"
             "Content-Length: %9ld\r\n\r\n"
@@ -319,6 +319,10 @@ mymhd_retcd webu_stream_mjpeg(struct webui_ctx *webui)
         MHD_add_response_header (response, MHD_HTTP_HEADER_ACCESS_CONTROL_ALLOW_ORIGIN
             , webui->cnt->conf.stream_cors_header);
     }
+    if (webui->cnt->conf.stream_cache_control != NULL) {
+        MHD_add_response_header (response, MHD_HTTP_HEADER_CACHE_CONTROL
+            , webui->cnt->conf.stream_cache_control);
+    }
 
     MHD_add_response_header (response, MHD_HTTP_HEADER_CONTENT_TYPE
         , "multipart/x-mixed-replace; boundary=BoundaryString");
@@ -361,6 +365,10 @@ mymhd_retcd webu_stream_static(struct webui_ctx *webui)
     if (webui->cnt->conf.stream_cors_header != NULL) {
         MHD_add_response_header (response, MHD_HTTP_HEADER_ACCESS_CONTROL_ALLOW_ORIGIN
             , webui->cnt->conf.stream_cors_header);
+    }
+    if (webui->cnt->conf.stream_cache_control != NULL) {
+        MHD_add_response_header (response, MHD_HTTP_HEADER_CACHE_CONTROL
+            , webui->cnt->conf.stream_cache_control);
     }
 
     MHD_add_response_header (response, MHD_HTTP_HEADER_CONTENT_TYPE, "image/jpeg");

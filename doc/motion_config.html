@@ -1116,6 +1116,12 @@
         <tr>
           <td align="left"></td>
           <td align="left"></td>
+          <td align="left"></td>
+          <td align="left"><a href="#stream_cache_control" >stream_cache_control</a></td>
+        </tr>
+        <tr>
+          <td align="left"></td>
+          <td align="left"></td>
           <td align="left">stream_cors_header</td>
           <td align="left"><a href="#stream_cors_header" >stream_cors_header</a></td>
         </tr>
@@ -1922,6 +1928,7 @@
             </tr>
             <tr>
               <td bgcolor="#edf4f9" ><a href="#stream_tls" >stream_tls</a> </td>
+              <td bgcolor="#edf4f9" ><a href="#stream_cache_control" >stream_cache_control</a> </td>
               <td bgcolor="#edf4f9" ><a href="#stream_cors_header" >stream_cors_header</a> </td>
               <td bgcolor="#edf4f9" ><a href="#stream_preview_scale" >stream_preview_scale</a> </td>
               <td bgcolor="#edf4f9" ><a href="#stream_preview_newline" >stream_preview_newline</a> </td>
@@ -5199,6 +5206,21 @@
         the log.  In addition to selecting this option, a <a href="#webcontrol_cert">webcontrol_cert</a> and
         <a href="#webcontrol_key">webcontrol_key</a> file must also be specified.
         <p></p>
+        <p></p>
+
+        <h3><a name="stream_cache_control"></a> stream_cache_control </h3>
+        <p></p>
+        <ul>
+          <li> Type: String</li>
+          <li> Range / Valid values: no-store, no-cache, etc. RFC 7234, RFC 5861, RFC 8246</li>
+          <li> Default: Not defined</li>
+        </ul>
+        <p></p>
+        Cache-control is an HTTP header that dictates browser caching behavior. 
+        In a nutshell, when someone visits a website, their browser will save certain resources, 
+        such as images and website data, in a store called the cache. When that user revisits the same website, 
+        cache-control sets the rules which determine whether that user will have those resources loaded from their local cache, 
+        or whether the browser will have to send a request to the server for fresh resources.
         <p></p>
 
         <h3><a name="stream_cors_header"></a> stream_cors_header </h3>

@@ -183,6 +183,7 @@ struct config conf_template = {
     .stream_authentication =           NULL,
     .stream_tls =                      FALSE,
     .stream_cors_header =              NULL,
+    .stream_cache_control =            NULL,
     .stream_preview_scale =            25,
     .stream_preview_newline =          FALSE,
     .stream_preview_method =           0,
@@ -1238,6 +1239,15 @@ config_param config_params[] = {
     "# The cross-origin resource sharing (CORS) header for the stream",
     0,
     CONF_OFFSET(stream_cors_header),
+    copy_uri,
+    print_string,
+    WEBUI_LEVEL_RESTRICTED
+    },
+    {
+    "stream_cache_control",
+    "# The cache control header for the stream",
+    0,
+    CONF_OFFSET(stream_cache_control),
     copy_uri,
     print_string,
     WEBUI_LEVEL_RESTRICTED
@@ -2590,6 +2600,7 @@ void conf_output_parms(struct context **cnt)
                     !strncmp(name, "netcam_userpass", 15) ||
                     !strncmp(name, "netcam_highres", 14) ||
                     !strncmp(name, "stream_cors_header", 18) ||
+                    !strncmp(name, "stream_cache_control", 20) ||
                     !strncmp(name, "stream_authentication", 21) ||
                     !strncmp(name, "webcontrol_authentication", 25) ||
                     !strncmp(name, "webcontrol_cors_header", 22) ||
@@ -3486,6 +3497,7 @@ static void config_parms_intl()
         MOTION_LOG(DBG, TYPE_ALL, NO_ERRNO,"%s:%s","stream_authentication",_("stream_authentication"));
         MOTION_LOG(DBG, TYPE_ALL, NO_ERRNO,"%s:%s","stream_tls",_("stream_tls"));
         MOTION_LOG(DBG, TYPE_ALL, NO_ERRNO,"%s:%s","stream_cors_header",_("stream_cors_header"));
+        MOTION_LOG(DBG, TYPE_ALL, NO_ERRNO,"%s:%s","stream_cache_control",_("stream_cache_control"));
         MOTION_LOG(DBG, TYPE_ALL, NO_ERRNO,"%s:%s","stream_preview_scale",_("stream_preview_scale"));
         MOTION_LOG(DBG, TYPE_ALL, NO_ERRNO,"%s:%s","stream_preview_newline",_("stream_preview_newline"));
         MOTION_LOG(DBG, TYPE_ALL, NO_ERRNO,"%s:%s","stream_preview_method",_("stream_preview_method"));

@@ -166,6 +166,7 @@ struct config {
     const char      *stream_authentication;
     int             stream_tls;
     const char      *stream_cors_header;
+    const char      *stream_cache_control;
     int             stream_preview_scale;
     int             stream_preview_newline;
     int             stream_preview_method;
